@@ -15,6 +15,7 @@ interface SaveData {
 }
 
 const STORAGE_KEY = 'piano-stars-progress';
+const ADMIN_PASSWORD = 'sid';
 
 function loadProgress(): SaveData {
   try {
@@ -33,6 +34,10 @@ export default function App() {
   const [progress, setProgress] = useState<SaveData>(loadProgress);
   const [currentLevel, setCurrentLevel] = useState(1);
   const [celebrationStars, setCelebrationStars] = useState(0);
+  const [adminMode, setAdminMode] = useState(false);
+  const [showAdminPrompt, setShowAdminPrompt] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [adminError, setAdminError] = useState(false);
 
   useEffect(() => saveProgress(progress), [progress]);
 
@@ -43,20 +48,43 @@ export default function App() {
 
   function handleComplete(levelId: number, stars: number) {
     setCelebrationStars(stars);
-    setProgress(prev => {
-      const existing = prev.levelProgress[levelId];
-      const bestStars = Math.max(stars, existing?.stars ?? 0);
-      const newHighest = Math.max(prev.highestUnlocked, levelId + 1);
-      return {
-        levelProgress: { ...prev.levelProgress, [levelId]: { stars: bestStars, completed: true } },
-        highestUnlocked: newHighest,
-      };
-    });
+    if (!adminMode) {
+      setProgress(prev => {
+        const existing = prev.levelProgress[levelId];
+        const bestStars = Math.max(stars, existing?.stars ?? 0);
+        const newHighest = Math.max(prev.highestUnlocked, levelId + 1);
+        return {
+          levelProgress: { ...prev.levelProgress, [levelId]: { stars: bestStars, completed: true } },
+          highestUnlocked: newHighest,
+        };
+      });
+    }
     setScreen('celebration');
   }
 
   function handleResetProgress() {
     setProgress({ levelProgress: {}, highestUnlocked: 1 });
+  }
+
+  function handleAdminSubmit() {
+    if (adminPassword.toLowerCase() === ADMIN_PASSWORD) {
+      setAdminMode(true);
+      setShowAdminPrompt(false);
+      setAdminPassword('');
+      setAdminError(false);
+    } else {
+      setAdminError(true);
+    }
+  }
+
+  function handleAdminToggle() {
+    if (adminMode) {
+      setAdminMode(false);
+    } else {
+      setShowAdminPrompt(true);
+      setAdminPassword('');
+      setAdminError(false);
+    }
   }
 
   if (screen === 'welcome') {
@@ -65,11 +93,11 @@ export default function App() {
         <div className="welcome-content">
           <div className="welcome-icon">
             <svg viewBox="0 0 80 80" width="120" height="120">
-              <rect x="10" y="15" width="8" height="50" rx="2" fill="#333" />
-              <rect x="22" y="15" width="8" height="50" rx="2" fill="#333" />
-              <rect x="34" y="15" width="8" height="50" rx="2" fill="#333" />
-              <rect x="46" y="15" width="8" height="50" rx="2" fill="#333" />
-              <rect x="58" y="15" width="8" height="50" rx="2" fill="#333" />
+              <rect x="10" y="15" width="8" height="50" rx="2" fill="#fff" />
+              <rect x="22" y="15" width="8" height="50" rx="2" fill="#fff" />
+              <rect x="34" y="15" width="8" height="50" rx="2" fill="#fff" />
+              <rect x="46" y="15" width="8" height="50" rx="2" fill="#fff" />
+              <rect x="58" y="15" width="8" height="50" rx="2" fill="#fff" />
               <circle cx="14" cy="12" r="5" fill="#ffd43b" />
               <circle cx="26" cy="8" r="5" fill="#ff6b6b" />
               <circle cx="38" cy="10" r="5" fill="#51cf66" />
@@ -80,12 +108,12 @@ export default function App() {
           <h1>Piano Stars</h1>
           <p className="welcome-subtitle">Learn to Read Music Notes!</p>
           <button className="btn btn-primary btn-large" onClick={() => setScreen('levels')}>
-            Play
+            Let's Play!
           </button>
         </div>
         <div className="floating-notes">
-          {['♪', '♫', '♩', '♬', '♪', '♫'].map((n, i) => (
-            <span key={i} className="floating-note" style={{ animationDelay: `${i * 2}s`, left: `${10 + i * 15}%` }}>
+          {['🎵', '⭐', '🎶', '🌟', '🎵', '⭐', '🎶', '🌟'].map((n, i) => (
+            <span key={i} className="floating-note" style={{ animationDelay: `${i * 1.5}s`, left: `${5 + i * 12}%` }}>
               {n}
             </span>
           ))}
@@ -103,8 +131,15 @@ export default function App() {
         <div className="levels-header">
           <button className="back-btn" onClick={() => setScreen('welcome')}>Back</button>
           <h1>Choose a Level</h1>
-          <div className="total-stars">★ {totalStars}/{maxStars}</div>
+          <div className="total-stars">⭐ {totalStars}/{maxStars}</div>
         </div>
+
+        {adminMode && (
+          <div className="admin-banner">
+            🔓 Admin Mode — progress not saved
+            <button className="admin-off-btn" onClick={handleAdminToggle}>Turn Off</button>
+          </div>
+        )}
 
         {SECTIONS.map(section => {
           const sectionLevels = LEVELS.filter(l => l.section === section);
@@ -113,10 +148,10 @@ export default function App() {
               <h3 className="section-title">{section}</h3>
               <div className="levels-grid">
                 {sectionLevels.map(level => {
-                  const unlocked = level.id <= progress.highestUnlocked;
+                  const unlocked = adminMode || level.id <= progress.highestUnlocked;
                   const lp = progress.levelProgress[level.id];
                   const stars = lp?.stars ?? 0;
-                  const isCurrent = level.id === progress.highestUnlocked && !lp?.completed;
+                  const isCurrent = !adminMode && level.id === progress.highestUnlocked && !lp?.completed;
                   return (
                     <button
                       key={level.id}
@@ -124,6 +159,7 @@ export default function App() {
                       onClick={() => unlocked && handleSelectLevel(level.id)}
                       disabled={!unlocked}
                     >
+                      <div className="level-emoji">{level.emoji}</div>
                       <div className="level-number">{level.id}</div>
                       <div className="level-title">{level.title}</div>
                       <div className="level-subtitle">{level.subtitle}</div>
@@ -144,7 +180,34 @@ export default function App() {
           );
         })}
 
-        <button className="reset-btn" onClick={handleResetProgress}>Reset Progress</button>
+        <div className="levels-footer">
+          <button className="reset-btn" onClick={handleResetProgress}>Reset Progress</button>
+          <button className="admin-btn" onClick={handleAdminToggle}>
+            {adminMode ? '🔓' : '🔑'}
+          </button>
+        </div>
+
+        {showAdminPrompt && (
+          <div className="admin-overlay" onClick={() => setShowAdminPrompt(false)}>
+            <div className="admin-modal" onClick={e => e.stopPropagation()}>
+              <h3>Enter Password</h3>
+              <input
+                type="password"
+                className="admin-input"
+                value={adminPassword}
+                onChange={e => { setAdminPassword(e.target.value); setAdminError(false); }}
+                onKeyDown={e => e.key === 'Enter' && handleAdminSubmit()}
+                placeholder="Password..."
+                autoFocus
+              />
+              {adminError && <p className="admin-error">Wrong password!</p>}
+              <div className="admin-modal-buttons">
+                <button className="btn btn-secondary" onClick={handleAdminSubmit}>Unlock</button>
+                <button className="btn btn-outline" onClick={() => setShowAdminPrompt(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -155,13 +218,14 @@ export default function App() {
         levelId={currentLevel}
         onComplete={handleComplete}
         onBack={() => setScreen('levels')}
+        adminMode={adminMode}
       />
     );
   }
 
   if (screen === 'celebration') {
     const level = LEVELS.find(l => l.id === currentLevel)!;
-    const messages = ['Good job! Keep practicing!', 'Great work!', 'Amazing! Perfect score!'];
+    const messages = ['Good job! Keep practicing!', 'Great work! ⭐⭐', 'AMAZING! Perfect score! 🏆'];
     const message = messages[Math.min(celebrationStars - 1, 2)];
     const hasNext = currentLevel < LEVELS.length;
 
@@ -169,7 +233,7 @@ export default function App() {
       <div className="screen celebration-screen">
         <div className="celebration-content">
           <h1 className="celebration-title">Level Complete!</h1>
-          <h2>{level.title}</h2>
+          <h2>{level.emoji} {level.title}</h2>
           <div className="celebration-stars">
             {[1, 2, 3].map(s => (
               <span
@@ -182,6 +246,7 @@ export default function App() {
             ))}
           </div>
           <p className="celebration-message">{message}</p>
+          {adminMode && <p className="admin-notice">Admin mode — progress not saved</p>}
           <div className="celebration-buttons">
             <button className="btn btn-secondary" onClick={() => setScreen('game')}>
               Try Again
@@ -197,14 +262,14 @@ export default function App() {
           </div>
         </div>
         <div className="confetti">
-          {Array.from({ length: 30 }).map((_, i) => (
+          {Array.from({ length: 40 }).map((_, i) => (
             <div
               key={i}
               className="confetti-piece"
               style={{
                 left: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 2}s`,
-                backgroundColor: ['#ff6b6b', '#ffd43b', '#51cf66', '#4c9aff', '#cc5de8', '#ff922b'][i % 6],
+                backgroundColor: ['#ff6b6b', '#ffd43b', '#51cf66', '#4c9aff', '#cc5de8', '#ff922b', '#f06595', '#20c997'][i % 8],
               }}
             />
           ))}

@@ -12,6 +12,7 @@ interface GameScreenProps {
   levelId: number;
   onComplete: (levelId: number, stars: number) => void;
   onBack: () => void;
+  adminMode?: boolean;
 }
 
 interface RoundState {
@@ -19,7 +20,7 @@ interface RoundState {
   clef: 'treble' | 'bass';
 }
 
-export default function GameScreen({ levelId, onComplete, onBack }: GameScreenProps) {
+export default function GameScreen({ levelId, onComplete, onBack, adminMode }: GameScreenProps) {
   const level = LEVELS.find(l => l.id === levelId)!;
   const { playNote, playCorrect, playWrong } = useAudio();
 
@@ -169,7 +170,7 @@ export default function GameScreen({ levelId, onComplete, onBack }: GameScreenPr
       <div className="game-header">
         <button className="back-btn" onClick={onBack}>Back</button>
         <div className="game-title">
-          <h2>{level.title}</h2>
+          <h2>{level.emoji} {level.title}</h2>
           <span className="round-label">Round {round} of {level.rounds}</span>
         </div>
         <div className="score-display">
@@ -178,6 +179,8 @@ export default function GameScreen({ levelId, onComplete, onBack }: GameScreenPr
           <span className="score-number">{score}</span>
         </div>
       </div>
+
+      {adminMode && <div className="admin-game-badge">ADMIN</div>}
 
       <div className="progress-bar-container">
         <div className="progress-bar" style={{ width: `${progress}%` }} />

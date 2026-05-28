@@ -25,6 +25,7 @@ export interface LevelConfig {
   notes: NoteName[];
   rounds: number;
   hintsUntilRound: number;
+  emoji: string;
 }
 
 export const ALL_CHOICES = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
@@ -61,49 +62,41 @@ export const LETTER_COLORS: Record<string, string> = {
 
 export const SECTIONS = [
   'Right Hand - Treble Clef',
-  'Which Hand?',
   'Left Hand - Bass Clef',
+  'Which Hand?',
   'Both Hands',
 ];
 
 export const LEVELS: LevelConfig[] = [
   // --- Right Hand - Treble Clef ---
-  { id: 1, title: 'Middle C', subtitle: 'Just one note', section: SECTIONS[0],
-    clef: 'treble', mode: 'note', notes: ['C4'], rounds: 15, hintsUntilRound: 5 },
-  { id: 2, title: 'C and D', subtitle: 'Two notes', section: SECTIONS[0],
-    clef: 'treble', mode: 'note', notes: ['C4', 'D4'], rounds: 15, hintsUntilRound: 3 },
-  { id: 3, title: 'C, D, E', subtitle: 'Three notes', section: SECTIONS[0],
-    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4'], rounds: 16, hintsUntilRound: 2 },
-  { id: 4, title: 'C to F', subtitle: 'Four notes', section: SECTIONS[0],
-    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4', 'F4'], rounds: 18, hintsUntilRound: 1 },
-  { id: 5, title: 'C to G', subtitle: 'Five finger position', section: SECTIONS[0],
-    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4', 'F4', 'G4'], rounds: 18, hintsUntilRound: 0 },
-  { id: 6, title: 'Add A and B', subtitle: 'All seven letters', section: SECTIONS[0],
-    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'], rounds: 20, hintsUntilRound: 0 },
-  { id: 7, title: 'Treble Master', subtitle: 'Full range', section: SECTIONS[0],
-    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'], rounds: 22, hintsUntilRound: 0 },
-
-  // --- Which Hand? ---
-  { id: 8, title: 'Left or Right?', subtitle: 'Learn the clefs', section: SECTIONS[1],
-    clef: 'both', mode: 'hand', notes: ['C4', 'D4', 'E4', 'G3', 'A3', 'B3'], rounds: 15, hintsUntilRound: 4 },
-  { id: 9, title: 'Quick Hands', subtitle: 'No hints', section: SECTIONS[1],
-    clef: 'both', mode: 'hand', notes: ['C4', 'D4', 'E4', 'F4', 'G4', 'G3', 'A3', 'B3', 'F3', 'E3'], rounds: 18, hintsUntilRound: 0 },
+  { id: 1, title: 'C, D, E', subtitle: 'First three notes!', section: SECTIONS[0],
+    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4'], rounds: 12, hintsUntilRound: 4, emoji: '🌟' },
+  { id: 2, title: 'C to G', subtitle: 'Five finger position', section: SECTIONS[0],
+    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4', 'F4', 'G4'], rounds: 15, hintsUntilRound: 3, emoji: '🎵' },
+  { id: 3, title: 'All the Notes!', subtitle: 'Full right hand', section: SECTIONS[0],
+    clef: 'treble', mode: 'note', notes: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'], rounds: 18, hintsUntilRound: 2, emoji: '🎹' },
 
   // --- Left Hand - Bass Clef ---
-  { id: 10, title: 'Below Middle C', subtitle: 'B, A, G', section: SECTIONS[2],
-    clef: 'bass', mode: 'note', notes: ['B3', 'A3', 'G3'], rounds: 15, hintsUntilRound: 3 },
-  { id: 11, title: 'More Bass Notes', subtitle: 'E to B', section: SECTIONS[2],
-    clef: 'bass', mode: 'note', notes: ['E3', 'F3', 'G3', 'A3', 'B3'], rounds: 18, hintsUntilRound: 1 },
-  { id: 12, title: 'Bass Master', subtitle: 'Full bass range', section: SECTIONS[2],
-    clef: 'bass', mode: 'note', notes: ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3'], rounds: 20, hintsUntilRound: 0 },
+  { id: 4, title: 'G, A, B', subtitle: 'First three bass notes!', section: SECTIONS[1],
+    clef: 'bass', mode: 'note', notes: ['G3', 'A3', 'B3'], rounds: 12, hintsUntilRound: 4, emoji: '🌈' },
+  { id: 5, title: 'E to B', subtitle: 'Five bass notes', section: SECTIONS[1],
+    clef: 'bass', mode: 'note', notes: ['E3', 'F3', 'G3', 'A3', 'B3'], rounds: 15, hintsUntilRound: 3, emoji: '🎶' },
+  { id: 6, title: 'Bass Master!', subtitle: 'Full left hand', section: SECTIONS[1],
+    clef: 'bass', mode: 'note', notes: ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3'], rounds: 18, hintsUntilRound: 2, emoji: '🏆' },
+
+  // --- Which Hand? ---
+  { id: 7, title: 'Left or Right?', subtitle: 'Learn the clefs', section: SECTIONS[2],
+    clef: 'both', mode: 'hand', notes: ['C4', 'D4', 'E4', 'G3', 'A3', 'B3'], rounds: 12, hintsUntilRound: 4, emoji: '👋' },
+  { id: 8, title: 'Quick Hands!', subtitle: 'No hints this time!', section: SECTIONS[2],
+    clef: 'both', mode: 'hand', notes: ['C4', 'D4', 'E4', 'F4', 'G4', 'G3', 'A3', 'B3', 'F3', 'E3'], rounds: 15, hintsUntilRound: 0, emoji: '⚡' },
 
   // --- Both Hands ---
-  { id: 13, title: 'Mixed Notes', subtitle: 'Treble and bass', section: SECTIONS[3],
-    clef: 'both', mode: 'note', notes: ['E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'], rounds: 18, hintsUntilRound: 0 },
-  { id: 14, title: 'Hand + Note', subtitle: 'Two-step challenge', section: SECTIONS[3],
-    clef: 'both', mode: 'combined', notes: ['G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'], rounds: 20, hintsUntilRound: 0 },
-  { id: 15, title: 'Grand Challenge', subtitle: 'Everything!', section: SECTIONS[3],
-    clef: 'both', mode: 'combined', notes: ['E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'], rounds: 22, hintsUntilRound: 0 },
+  { id: 9, title: 'Mixed Notes', subtitle: 'Treble and bass!', section: SECTIONS[3],
+    clef: 'both', mode: 'note', notes: ['E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'], rounds: 16, hintsUntilRound: 0, emoji: '🎸' },
+  { id: 10, title: 'Hand + Note', subtitle: 'Two-step challenge!', section: SECTIONS[3],
+    clef: 'both', mode: 'combined', notes: ['G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'], rounds: 18, hintsUntilRound: 0, emoji: '🚀' },
+  { id: 11, title: 'Grand Challenge!', subtitle: 'Everything!!!', section: SECTIONS[3],
+    clef: 'both', mode: 'combined', notes: ['E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'], rounds: 20, hintsUntilRound: 0, emoji: '👑' },
 ];
 
 export function getClefForNote(note: NoteName): 'treble' | 'bass' {
@@ -129,8 +122,8 @@ export function pickRandomNote(pool: NoteName[], lastNote?: NoteName): NoteName 
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
-const CORRECT_MESSAGES = ['Great job!', 'You got it!', 'Awesome!', 'Perfect!', 'Way to go!', 'Star!', 'Nailed it!', 'Yes!'];
-const STREAK_MESSAGES = ['On fire!', 'Unstoppable!', 'Keep going!', 'Amazing streak!'];
+const CORRECT_MESSAGES = ['Great job!', 'You got it!', 'Awesome!', 'Perfect!', 'Way to go!', 'Super star!', 'Nailed it!', 'Yes!', 'Woohoo!', 'Amazing!'];
+const STREAK_MESSAGES = ['On fire! 🔥', 'Unstoppable!', 'Keep going!', 'Amazing streak!', 'You rock!'];
 const WRONG_MESSAGES_1 = ['Not quite — try again!', 'Hmm, look carefully!', 'Close! Try another one.'];
 const WRONG_MESSAGES_2 = ['Almost! Here\'s a hint...', 'Look at where the note sits.'];
 
